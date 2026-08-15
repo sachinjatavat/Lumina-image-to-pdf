@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Lumina Convert - Premium Web Utility Suite</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <style>
+        :root {
+            --background: #f7f9fb;
+            --on-background: #191c1e;
+            --surface: #f7f9fb;
+            --surface-dim: #d8dadc;
+            --surface-bright: #f7f9fb;
+            --surface-container-lowest: #ffffff;
+            --surface-container-low: #f2f4f6;
+            --surface-container: #eceef0;
+            --surface-container-high: #e6e8ea;
+            --surface-container-highest: #e0e3e5;
+            --on-surface: #191c1e;
+            --on-surface-variant: #464555;
+            --inverse-surface: #2d3133;
+            --inverse-on-surface: #eff1f3;
+            --outline: #777587;
+            --outline-variant: #c7c4d8;
+            --primary: #3525cd;
+            --on-primary: #ffffff;
+            --primary-container: #4f46e5;
+            --on-primary-container: #dad7ff;
+            --secondary: #565e74;
+            --on-secondary: #ffffff;
+            --secondary-container: #dae2fd;
+            --on-secondary-container: #5c647a;
+            --error: #ba1a1a;
+            --error-container: #ffdad6;
+            
+            --surface-lowest-rgb: 255, 255, 255;
+            --primary-rgb: 53, 37, 205;
+        }
+
+        .dark {
+            --background: #080a10;
+            --on-background: #f1f3f9;
+            --surface: #0e111a;
+            --surface-dim: #0a0d14;
+            --surface-bright: #141925;
+            --surface-container-lowest: #0b0d14;
+            --surface-container-low: #101520;
+            --surface-container: #161c2b;
+            --surface-container-high: #20273a;
+            --surface-container-highest: #2b344d;
+            --on-surface: #f1f3f9;
+            --on-surface-variant: #cbd3e1;
+            --inverse-surface: #f2f4f6;
+            --inverse-on-surface: #191c1e;
+            --outline: #6e7687;
+            --outline-variant: #283043;
+            --primary: #818cf8;
+            --on-primary: #0a0d14;
+            --primary-container: #4f46e5;
+            --on-primary-container: #e0e7ff;
+            --secondary: #94a3b8;
+            --on-secondary: #0a0d14;
+            --secondary-container: #1e293b;
+            --on-secondary-container: #cbd5e1;
+            --error: #f87171;
+            --error-container: #7f1d1d;
+            
+            --surface-lowest-rgb: 11, 13, 20;
+            --primary-rgb: 129, 140, 248;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--surface-container-low);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--outline-variant);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--outline);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .upload-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .upload-glow:hover {
+            box-shadow: 0 12px 30px rgba(var(--primary-rgb), 0.08);
+            border-color: var(--primary);
+        }
+
+        /* Modal glass overlay transition */
+        .modal-overlay {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-container {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+
+        /* Ambient Glow backgrounds */
+        .ambient-glow-1 {
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+        }
+        .ambient-glow-2 {
+            background: radial-gradient(circle, rgba(129, 140, 248, 0.06) 0%, rgba(255, 255, 255, 0) 75%);
+        }
+    </style>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "var(--surface-dim)",
+                        "secondary": "var(--secondary)",
+                        "surface-container": "var(--surface-container)",
+                        "outline": "var(--outline)",
+                        "inverse-surface": "var(--inverse-surface)",
+                        "on-surface": "var(--on-surface)",
+                        "surface-container-low": "var(--surface-container-low)",
+                        "surface-container-high": "var(--surface-container-high)",
+                        "surface-container-highest": "var(--surface-container-highest)",
+                        "surface-container-lowest": "var(--surface-container-lowest)",
+                        "background": "var(--background)",
+                        "on-background": "var(--on-background)",
+                        "primary": "var(--primary)",
+                        "on-primary": "var(--on-primary)",
+                        "primary-container": "var(--primary-container)",
+                        "on-primary-container": "var(--on-primary-container)",
+                        "on-secondary-container": "var(--on-secondary-container)",
+                        "surface": "var(--surface)",
+                        "outline-variant": "var(--outline-variant)"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-desktop": "64px",
+                        "section-gap": "128px",
+                        "gutter": "32px",
+                        "margin-mobile": "20px",
+                        "stack-md": "24px",
+                        "container-max": "1280px",
+                        "stack-sm": "8px",
+                        "stack-lg": "64px"
+                    },
+                    fontFamily: {
+                        sans: ["Geist", "sans-serif"],
+                        mono: ["Geist Mono", "monospace"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-sans min-h-screen flex flex-col relative overflow-x-hidden transition-colors duration-300">
+    
+    <!-- Background glows -->
+    <div class="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] ambient-glow-1 pointer-events-none rounded-full z-0"></div>
+    <div class="absolute top-[400px] right-[-200px] w-[700px] h-[700px] ambient-glow-2 pointer-events-none rounded-full z-0"></div>
+
+    <!-- Sticky Navigation -->
+    <header class="bg-surface-container-lowest/80 backdrop-blur-xl fixed top-0 w-full z-40 border-b border-outline-variant/40 shadow-sm transition-all duration-300">
+        <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-16 flex items-center justify-between">
+            <div class="flex items-center gap-stack-sm cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <span class="material-symbols-outlined text-primary text-[28px]">bubble_chart</span>
+                <span class="font-bold text-[22px] tracking-tighter text-on-surface leading-none">Lumina</span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-surface-container transition-colors text-on-surface flex items-center justify-center active:scale-95 duration-200" title="Toggle Light/Dark Theme">
+                    <span class="material-symbols-outlined text-[22px]" id="theme-toggle-icon">dark_mode</span>
+                </button>
+                
+                <button onclick="openModal('signin-modal')" class="bg-primary text-on-primary font-semibold text-[14px] px-5 py-2 rounded-full hover:opacity-90 transition-opacity active:scale-95 duration-200 shadow-sm">
+                    Sign In
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Canvas -->
+    <main class="flex-grow pt-[120px] pb-section-gap px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto flex flex-col gap-20 relative z-10">
+        
+        <!-- Hero Section -->
+        <section class="flex flex-col items-center text-center max-w-3xl mx-auto gap-stack-md pt-4">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-wider mb-2">
+                <span class="material-symbols-outlined text-xs">bolt</span> Local & Instant Processing
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-on-surface tracking-tight leading-[1.15] mb-2">
+                The All-in-One <br/><span class="text-primary bg-gradient-to-r from-primary to-indigo-500 bg-clip-text text-transparent">Conversion Suite.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-secondary max-w-xl font-normal leading-relaxed">
+                Experience seamless, high-fidelity conversion and AI generation. Designed for creatives who demand pristine quality, uncompromised speed, and absolute privacy.
+            </p>
+        </section>
+
+        <!-- Tools Grid Section -->
+        <section class="w-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Image to PDF Card -->
+                <div onclick="openModal('image-to-pdf-modal')" class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/40 rounded-[28px] p-8 flex flex-col gap-6 relative overflow-hidden group upload-glow h-full cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="material-symbols-outlined text-[32px] text-primary">description</span>
+                                <h2 class="text-xl font-semibold text-on-surface">Image to PDF</h2>
+                            </div>
+                            <p class="text-secondary leading-relaxed mb-6">Combine multiple images into a pristine, high-quality PDF document locally in your browser.</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center gap-3 w-full border-2 border-dashed border-outline-variant/60 rounded-xl p-8 bg-surface-container-low/40 group-hover:border-primary/50 transition-colors">
+                            <span class="material-symbols-outlined text-[48px] text-secondary group-hover:text-primary transition-colors">cloud_upload</span>
+                            <p class="text-sm font-semibold text-secondary">Drop or Select Images</p>
+                            <button class="bg-primary text-on-primary text-xs font-semibold px-5 py-2 rounded-full mt-2 group-hover:scale-105 transition-transform">Get Started</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text to Image & PDF Card -->
+                <div onclick="openModal('text-to-pdf-modal')" class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/40 rounded-[28px] p-8 flex flex-col gap-6 relative overflow-hidden group upload-glow h-full cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="material-symbols-outlined text-[32px] text-primary">auto_awesome</span>
+                                <h2 class="text-xl font-semibold text-on-surface">Text to Image &amp; PDF</h2>
+                            </div>
+                            <p class="text-secondary leading-relaxed mb-6">Generate AI imagery and instantly package it into a multi-page PDF presentation.</p>
+                        </div>
+                        <div class="flex flex-col gap-3 w-full">
+                            <textarea readonly class="w-full bg-surface-container-low/50 border border-outline-variant/40 rounded-xl p-4 text-sm text-secondary resize-none h-[120px] focus:outline-none pointer-events-none" placeholder="Describe the imagery you want to generate and bundle into a PDF..."></textarea>
+                            <button class="w-full bg-primary text-on-primary text-sm font-semibold py-3.5 rounded-full shadow-sm flex items-center justify-center gap-2 group-hover:bg-primary-container transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">magic_button</span> Generate Presentation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text to Image Card -->
+                <div onclick="openModal('text-to-image-modal')" class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/40 rounded-[28px] p-8 flex flex-col gap-6 relative overflow-hidden group upload-glow h-full cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="material-symbols-outlined text-[32px] text-primary">image</span>
+                                <h2 class="text-xl font-semibold text-on-surface">Text to Image</h2>
+                            </div>
+                            <p class="text-secondary leading-relaxed mb-6">Transform text descriptions into stunning, high-resolution AI generated artwork and photography.</p>
+                        </div>
+                        <div class="flex flex-col gap-3 w-full">
+                            <textarea readonly class="w-full bg-surface-container-low/50 border border-outline-variant/40 rounded-xl p-4 text-sm text-secondary resize-none h-[120px] focus:outline-none pointer-events-none" placeholder="A futuristic city at sunset with flying cars..."></textarea>
+                            <button class="w-full bg-primary text-on-primary text-sm font-semibold py-3.5 rounded-full shadow-sm flex items-center justify-center gap-2 group-hover:bg-primary-container transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">draw</span> Generate Image
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extract Text Card -->
+                <div onclick="openModal('ocr-modal')" class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/40 rounded-[28px] p-8 flex flex-col gap-6 relative overflow-hidden group upload-glow h-full cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="material-symbols-outlined text-[32px] text-primary">document_scanner</span>
+                                <h2 class="text-xl font-semibold text-on-surface">Extract Text (OCR)</h2>
+                            </div>
+                            <p class="text-secondary leading-relaxed mb-6">Instantly pull editable text from screenshots, documents, and photos using on-device OCR.</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center gap-3 w-full border-2 border-dashed border-outline-variant/60 rounded-xl p-8 bg-surface-container-low/40 group-hover:border-primary/50 transition-colors">
+                            <span class="material-symbols-outlined text-[48px] text-secondary group-hover:text-primary transition-colors">photo_camera</span>
+                            <p class="text-sm font-semibold text-secondary">Drop Image to Scan</p>
+                            <button class="bg-primary text-on-primary text-xs font-semibold px-5 py-2 rounded-full mt-2 group-hover:scale-105 transition-transform">Open Scanner</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Feature Bento -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto w-full">
+            <div class="bg-surface-container-low/60 border border-outline-variant/10 rounded-2xl p-6 flex flex-col gap-3 items-start hover:-translate-y-1 transition-transform duration-300">
+                <span class="material-symbols-outlined text-[32px] text-primary bg-primary/10 p-3 rounded-xl mb-1">bolt</span>
+                <h3 class="text-lg font-semibold text-on-surface">Instant Conversion</h3>
+                <p class="text-sm text-secondary leading-relaxed">Powered by optimized client-side libraries, your files are compiled locally in milliseconds.</p>
+            </div>
+            <div class="bg-surface-container-low/60 border border-outline-variant/10 rounded-2xl p-6 flex flex-col gap-3 items-start hover:-translate-y-1 transition-transform duration-300">
+                <span class="material-symbols-outlined text-[32px] text-primary bg-primary/10 p-3 rounded-xl mb-1">verified_user</span>
+                <h3 class="text-lg font-semibold text-on-surface">Zero Data Retention</h3>
+                <p class="text-sm text-secondary leading-relaxed">Absolute privacy. We never store or upload your files; everything processes locally in your sandbox.</p>
+            </div>
+            <div class="bg-surface-container-low/60 border border-outline-variant/10 rounded-2xl p-6 flex flex-col gap-3 items-start hover:-translate-y-1 transition-transform duration-300">
+                <span class="material-symbols-outlined text-[32px] text-primary bg-primary/10 p-3 rounded-xl mb-1">high_quality</span>
+                <h3 class="text-lg font-semibold text-on-surface">Pristine Quality</h3>
+                <p class="text-sm text-secondary leading-relaxed">Lossless output generation, ensuring that all text, visual layers, and graphics remain razor sharp.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface-container-low border-t border-outline-variant/40 py-12 px-margin-mobile text-center mt-auto transition-colors duration-300">
+        <div class="max-w-container-max mx-auto flex flex-col items-center gap-6">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[28px]">bubble_chart</span>
+                <span class="font-bold text-[22px] tracking-tighter text-on-surface">Lumina</span>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6">
+                <a class="text-sm text-secondary hover:text-primary transition-colors cursor-pointer" onclick="openModal('privacy-modal')">Privacy Policy</a>
+                <a class="text-sm text-secondary hover:text-primary transition-colors cursor-pointer" onclick="openModal('terms-modal')">Terms of Service</a>
+                <a class="text-sm text-secondary hover:text-primary transition-colors cursor-pointer" onclick="showToast('Customer support is active at support@lumina.io', 'info')">Support</a>
+            </div>
+            <p class="text-xs text-secondary mt-2">© 2026 Lumina Convert. All rights reserved. Locally secured.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE MODALS WORKSPACE -->
+    <div id="modals-container" class="relative z-50">
+        
+        <!-- 1. IMAGE TO PDF WORKSPACE MODAL -->
+        <div id="image-to-pdf-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 md:p-8 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-5xl w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-6">
+                    <div>
+                        <button onclick="closeModal('image-to-pdf-modal')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary hover:text-primary mb-2 transition-colors">
+                            <span class="material-symbols-outlined text-xs">arrow_back</span> Back to Suite
+                        </button>
+                        <h2 class="text-2xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">description</span> Image to PDF
+                        </h2>
+                        <p class="text-sm text-secondary mt-1">Combine, organize, and compile multiple images into a standardized PDF document offline.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="clearAllPdfImages()" class="text-xs font-semibold text-secondary hover:text-error transition-colors px-3 py-2 rounded-lg hover:bg-error-container/10">
+                            Clear Files
+                        </button>
+                        <button onclick="closeModal('image-to-pdf-modal')" class="p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid Workspace -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left: Upload and Previews -->
+                    <div class="lg:col-span-7 flex flex-col gap-6">
+                        <!-- Dropzone -->
+                        <div id="pdf-dropzone" class="border-2 border-dashed border-outline-variant rounded-2xl p-8 hover:border-primary/50 transition-colors bg-surface-container-low/30 flex flex-col items-center justify-center cursor-pointer min-h-[180px] text-center" onclick="document.getElementById('pdf-file-input').click()">
+                            <input type="file" id="pdf-file-input" multiple accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden" onchange="handlePdfFileSelect(event)">
+                            <span class="material-symbols-outlined text-[42px] text-secondary mb-2">add_photo_alternate</span>
+                            <span class="text-sm font-semibold text-on-surface">Drag & drop images here or <span class="text-primary hover:underline">browse files</span></span>
+                            <span class="text-xs text-secondary mt-1">Supports JPEG, PNG, WEBP. Max 20MB per image.</span>
+                        </div>
+
+                        <!-- Image Preview List -->
+                        <div class="flex flex-col gap-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-on-surface">Queue Images (<span id="pdf-queue-count">0</span>)</h3>
+                                <span class="text-xs text-secondary">Tip: Reorder using arrow buttons</span>
+                            </div>
+                            <div id="pdf-preview-list" class="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-2">
+                                <!-- Empty state inside previews -->
+                                <div id="pdf-empty-preview" class="flex flex-col items-center justify-center p-12 bg-surface-container-low/20 rounded-2xl border border-outline-variant/10 text-center">
+                                    <span class="material-symbols-outlined text-[32px] text-outline mb-2">collections</span>
+                                    <p class="text-xs text-secondary">No images uploaded yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: PDF Settings & Compile -->
+                    <div class="lg:col-span-5 flex flex-col justify-between">
+                        <div class="bg-surface-container-low/40 border border-outline-variant/20 rounded-[20px] p-6 flex flex-col gap-5">
+                            <h3 class="text-sm font-bold text-on-surface border-b border-outline-variant/10 pb-2">PDF Document Settings</h3>
+                            
+                            <!-- Filename -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="pdf-filename" class="text-xs font-semibold text-secondary">Output Filename</label>
+                                <input type="text" id="pdf-filename" value="lumina-converted.pdf" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary">
+                            </div>
+
+                            <!-- Page size settings -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="pdf-pagesize" class="text-xs font-semibold text-secondary">Page Size</label>
+                                <select id="pdf-pagesize" onchange="togglePdfOrientation()" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary">
+                                    <option value="auto">Fit Image (Auto Aspect Ratio)</option>
+                                    <option value="a4">A4 (210 x 297 mm)</option>
+                                    <option value="letter">US Letter (8.5 x 11 in)</option>
+                                </select>
+                            </div>
+
+                            <!-- Orientation (hidden when auto) -->
+                            <div id="pdf-orientation-container" class="flex flex-col gap-1.5 hidden">
+                                <label for="pdf-orientation" class="text-xs font-semibold text-secondary">Page Orientation</label>
+                                <select id="pdf-orientation" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary">
+                                    <option value="portrait">Portrait</option>
+                                    <option value="landscape">Landscape</option>
+                                </select>
+                            </div>
+
+                            <!-- Margins -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="pdf-margins" class="text-xs font-semibold text-secondary">Page Margins</label>
+                                <select id="pdf-margins" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary">
+                                    <option value="0">None (0 mm)</option>
+                                    <option value="10">Small (10 mm)</option>
+                                    <option value="20">Medium (20 mm)</option>
+                                </select>
+                            </div>
+
+                            <!-- Fit options -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="pdf-fit" class="text-xs font-semibold text-secondary">Image Sizing Mode</label>
+                                <select id="pdf-fit" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary">
+                                    <option value="contain">Contain (Keep entire image visible)</option>
+                                    <option value="cover">Cover (Fill page entirely)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Progress and Actions -->
+                        <div class="flex flex-col gap-3 mt-6">
+                            <!-- Progress Bar -->
+                            <div id="pdf-progress-container" class="hidden flex flex-col gap-1">
+                                <div class="flex items-center justify-between text-xs font-semibold text-secondary">
+                                    <span id="pdf-progress-status">Compiling pages...</span>
+                                    <span id="pdf-progress-percent">0%</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                                    <div id="pdf-progress-bar" class="h-full bg-primary w-0 transition-all duration-150"></div>
+                                </div>
+                            </div>
+
+                            <button onclick="compilePdf()" class="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-semibold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 active:scale-95 duration-200 transition-all">
+                                <span class="material-symbols-outlined text-sm">build</span> Build and Export PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. TEXT TO IMAGE & PDF WORKSPACE MODAL -->
+        <div id="text-to-pdf-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 md:p-8 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-5xl w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-6">
+                    <div>
+                        <button onclick="closeModal('text-to-pdf-modal')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary hover:text-primary mb-2 transition-colors">
+                            <span class="material-symbols-outlined text-xs">arrow_back</span> Back to Suite
+                        </button>
+                        <h2 class="text-2xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">auto_awesome</span> Text to Image &amp; PDF
+                        </h2>
+                        <p class="text-sm text-secondary mt-1">Provide a prompt; we'll generate sequential AI images and bundle them into a presentation PDF.</p>
+                    </div>
+                    <button onclick="closeModal('text-to-pdf-modal')" class="p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center self-end md:self-auto">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Grid Workspace -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left: Prompt controls -->
+                    <div class="lg:col-span-5 flex flex-col justify-between h-full gap-6">
+                        <div class="flex flex-col gap-5">
+                            <div class="flex flex-col gap-1.5">
+                                <label for="t2pdf-prompt" class="text-xs font-semibold text-secondary">Creative Prompt / Story Pitch</label>
+                                <textarea id="t2pdf-prompt" rows="4" class="w-full bg-surface-container-low/50 border border-outline-variant/60 rounded-xl p-4 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary resize-none" placeholder="E.g., A historic timeline of a spacecraft landing on Jupiter's ocean moon Europa, cinematic design style..."></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="t2pdf-page-count" class="text-xs font-semibold text-secondary">Page Count</label>
+                                    <select id="t2pdf-page-count" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary">
+                                        <option value="2">2 Pages</option>
+                                        <option value="3" selected>3 Pages</option>
+                                        <option value="4">4 Pages</option>
+                                        <option value="5">5 Pages</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="t2pdf-style" class="text-xs font-semibold text-secondary font-sans">Artistic Theme</label>
+                                    <select id="t2pdf-style" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary">
+                                        <option value="minimal">Minimal Tech</option>
+                                        <option value="digital">Vibrant Digital Art</option>
+                                        <option value="painting">Cinematic Oil Painting</option>
+                                        <option value="cyberpunk">Cyberpunk Neon</option>
+                                        <option value="anime">Anime Fantasy</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress & Generate Actions -->
+                        <div class="flex flex-col gap-4 mt-4">
+                            <!-- Progress Loader -->
+                            <div id="t2pdf-progress-container" class="hidden flex flex-col gap-1.5 bg-surface-container-low/50 border border-outline-variant/10 rounded-xl p-4">
+                                <div class="flex items-center justify-between text-xs font-semibold text-secondary">
+                                    <span id="t2pdf-progress-status">Drafting slide prompts...</span>
+                                    <span id="t2pdf-progress-percent">0%</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                                    <div id="t2pdf-progress-bar" class="h-full bg-primary w-0 transition-all duration-300"></div>
+                                </div>
+                            </div>
+
+                            <button onclick="generateTextToPdfPresentation()" id="t2pdf-generate-btn" class="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-semibold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 active:scale-95 duration-200 transition-all">
+                                <span class="material-symbols-outlined text-[20px]">magic_button</span> Generate Presentation PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Slides Previews Output -->
+                    <div class="lg:col-span-7 flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-on-surface">Slide Deck Overview</h3>
+                            <button id="t2pdf-download-btn" onclick="downloadGeneratedPresentation()" class="hidden text-xs font-semibold text-primary hover:underline flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-xs">download</span> Download PDF Presentation
+                            </button>
+                        </div>
+                        
+                        <div id="t2pdf-slides-preview" class="border border-outline-variant/30 rounded-2xl p-6 bg-surface-container-low/20 min-h-[300px] flex flex-col items-center justify-center gap-4 max-h-[420px] overflow-y-auto">
+                            <!-- Empty State -->
+                            <div id="t2pdf-empty" class="text-center flex flex-col items-center gap-2 p-10">
+                                <span class="material-symbols-outlined text-[48px] text-outline">auto_stories</span>
+                                <p class="text-sm font-semibold text-secondary">Your slide deck will build here.</p>
+                                <p class="text-xs text-secondary max-w-xs leading-normal">Enter a prompt and hit Generate. Lumina will output sequential illustrations and package them directly into a downloadable presentation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. TEXT TO IMAGE WORKSPACE MODAL -->
+        <div id="text-to-image-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 md:p-8 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-5xl w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-6">
+                    <div>
+                        <button onclick="closeModal('text-to-image-modal')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary hover:text-primary mb-2 transition-colors">
+                            <span class="material-symbols-outlined text-xs">arrow_back</span> Back to Suite
+                        </button>
+                        <h2 class="text-2xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">image</span> Text to Image
+                        </h2>
+                        <p class="text-sm text-secondary mt-1">Bring your ideas to life instantly with public, high-fidelity diffusion modeling.</p>
+                    </div>
+                    <button onclick="closeModal('text-to-image-modal')" class="p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center self-end md:self-auto">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Grid Workspace -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left: Controls -->
+                    <div class="lg:col-span-5 flex flex-col justify-between h-full gap-6">
+                        <div class="flex flex-col gap-5">
+                            <div class="flex flex-col gap-1.5">
+                                <label for="t2i-prompt" class="text-xs font-semibold text-secondary">Creative Description / Prompt</label>
+                                <textarea id="t2i-prompt" rows="5" class="w-full bg-surface-container-low/50 border border-outline-variant/60 rounded-xl p-4 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary resize-none" placeholder="E.g., An astronaut lounging in a luxurious digital garden on the Moon, cyberpunk colors, 8k render..."></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="t2i-aspect" class="text-xs font-semibold text-secondary">Aspect Ratio</label>
+                                    <select id="t2i-aspect" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary">
+                                        <option value="1:1" selected>Square (1:1)</option>
+                                        <option value="16:9">Landscape (16:9)</option>
+                                        <option value="9:16">Portrait (9:16)</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="t2i-style" class="text-xs font-semibold text-secondary font-sans">Art Style Preset</label>
+                                    <select id="t2i-style" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary">
+                                        <option value="none">No Preset (Raw Prompt)</option>
+                                        <option value="photo">Photorealistic Photo</option>
+                                        <option value="digital">Vibrant Digital Art</option>
+                                        <option value="cyberpunk">Cyberpunk Synthwave</option>
+                                        <option value="anime">Classic Anime</option>
+                                        <option value="painting">Cinematic Oil Painting</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="generateTextToImage()" id="t2i-generate-btn" class="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-semibold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 active:scale-95 duration-200 transition-all mt-4">
+                            <span class="material-symbols-outlined text-[20px]">draw</span> Generate Image
+                        </button>
+                    </div>
+
+                    <!-- Right: Output Canvas -->
+                    <div class="lg:col-span-7 flex flex-col gap-4">
+                        <h3 class="text-sm font-bold text-on-surface">Output Preview</h3>
+                        <div id="t2i-output-container" class="border border-outline-variant/30 rounded-2xl bg-surface-container-low/20 flex flex-col items-center justify-center gap-4 min-h-[350px] relative overflow-hidden p-4">
+                            <!-- Empty state / Initial -->
+                            <div id="t2i-empty" class="text-center p-8 flex flex-col items-center gap-2">
+                                <span class="material-symbols-outlined text-[48px] text-outline">photo_library</span>
+                                <p class="text-sm font-semibold text-secondary">Render canvas ready</p>
+                                <p class="text-xs text-secondary leading-normal max-w-xs">Provide a creative description and select a preset, then hit generate to initialize rendering.</p>
+                            </div>
+
+                            <!-- Generated image display -->
+                            <img id="t2i-output-img" class="hidden max-h-[400px] rounded-xl object-contain shadow-lg border border-outline-variant/10 bg-slate-950/5 relative z-10" alt="Generated AI Visual">
+
+                            <!-- Shimmer Loader overlay -->
+                            <div id="t2i-loader" class="hidden absolute inset-0 bg-background/90 flex flex-col items-center justify-center gap-3 z-20">
+                                <div class="w-12 h-12 rounded-full border-4 border-t-primary border-outline-variant animate-spin"></div>
+                                <p id="t2i-loader-status" class="text-xs font-semibold text-secondary">Brushing design elements...</p>
+                            </div>
+                        </div>
+
+                        <!-- Secondary Actions -->
+                        <div id="t2i-actions" class="hidden flex flex-wrap items-center justify-between gap-4 border-t border-outline-variant/10 pt-3">
+                            <div class="flex items-center gap-2">
+                                <button onclick="downloadGeneratedImage()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-primary/10 text-primary border border-primary/20 px-4 py-2 rounded-xl hover:bg-primary/20 transition-all">
+                                    <span class="material-symbols-outlined text-sm">download</span> Download Image
+                                </button>
+                                <button onclick="copyGeneratedImageLink()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-surface-container text-on-surface px-4 py-2 rounded-xl hover:bg-surface-container-high transition-all">
+                                    <span class="material-symbols-outlined text-sm">link</span> Copy Link
+                                </button>
+                            </div>
+                            <button onclick="transferGeneratedImageToPdf()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline">
+                                Send to PDF Queue <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. EXTRACT TEXT (OCR) WORKSPACE MODAL -->
+        <div id="ocr-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 md:p-8 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-5xl w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-6">
+                    <div>
+                        <button onclick="closeModal('ocr-modal')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary hover:text-primary mb-2 transition-colors">
+                            <span class="material-symbols-outlined text-xs">arrow_back</span> Back to Suite
+                        </button>
+                        <h2 class="text-2xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">document_scanner</span> Extract Text (OCR)
+                        </h2>
+                        <p class="text-sm text-secondary mt-1">Extract editable plain text from photos, scans, and documents securely client-side.</p>
+                    </div>
+                    <button onclick="closeModal('ocr-modal')" class="p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center self-end md:self-auto">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Grid Workspace -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left: Upload Scan -->
+                    <div class="lg:col-span-5 flex flex-col gap-4">
+                        <h3 class="text-sm font-bold text-on-surface">Document Image Source</h3>
+                        <div id="ocr-dropzone" class="border-2 border-dashed border-outline-variant rounded-2xl p-8 hover:border-primary/50 transition-colors bg-surface-container-low/30 flex flex-col items-center justify-center cursor-pointer min-h-[220px] text-center" onclick="document.getElementById('ocr-file-input').click()">
+                            <input type="file" id="ocr-file-input" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden" onchange="handleOcrFileSelect(event)">
+                            
+                            <div id="ocr-dropzone-inner" class="flex flex-col items-center">
+                                <span class="material-symbols-outlined text-[42px] text-secondary mb-2">photo_camera</span>
+                                <span class="text-sm font-semibold text-on-surface">Select image to extract text</span>
+                                <span class="text-xs text-secondary mt-1">Supports PNG, JPG, WEBP. Upload directly.</span>
+                            </div>
+
+                            <img id="ocr-preview-img" class="hidden max-h-[180px] rounded-lg shadow border border-outline-variant/10 object-contain mt-2" alt="OCR Source File">
+                        </div>
+
+                        <div class="flex items-center justify-between mt-2">
+                            <button id="ocr-trigger-btn" disabled onclick="runOCR()" class="w-full bg-primary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-container text-on-primary hover:text-on-primary-container font-semibold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all">
+                                <span class="material-symbols-outlined text-[20px]">document_scanner</span> Run Character Extraction
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: OCR Output -->
+                    <div class="lg:col-span-7 flex flex-col gap-4">
+                        <h3 class="text-sm font-bold text-on-surface flex items-center justify-between">
+                            Extracted Text Output
+                            <span id="ocr-stats" class="text-xs font-normal text-secondary hidden">0 words | 0 characters</span>
+                        </h3>
+
+                        <div class="relative min-h-[300px] flex flex-col">
+                            <!-- Overlay Loader -->
+                            <div id="ocr-loader" class="hidden absolute inset-0 bg-background/90 backdrop-blur-sm flex flex-col items-center justify-center gap-3 z-20 border border-outline-variant/20 rounded-2xl p-6 text-center">
+                                <div class="w-12 h-12 rounded-full border-4 border-t-primary border-outline-variant animate-spin"></div>
+                                <p id="ocr-loader-status" class="text-xs font-semibold text-secondary">Spawning OCR Engine...</p>
+                                <div class="w-48 h-1.5 bg-surface-container-high rounded-full overflow-hidden mt-1">
+                                    <div id="ocr-progress-bar" class="h-full bg-primary w-0 transition-all duration-150"></div>
+                                </div>
+                            </div>
+
+                            <!-- Text Area -->
+                            <textarea id="ocr-output-text" class="w-full flex-grow bg-surface-container-low/30 border border-outline-variant/50 rounded-2xl p-6 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary resize-none min-h-[280px]" placeholder="Extracted text will render here. Choose a file on the left and trigger scanning..."></textarea>
+                        </div>
+
+                        <!-- Actions Console -->
+                        <div id="ocr-actions" class="hidden flex items-center justify-between border-t border-outline-variant/10 pt-3">
+                            <div class="flex items-center gap-3">
+                                <button onclick="copyOcrText()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-primary/10 text-primary border border-primary/20 px-4 py-2.5 rounded-xl hover:bg-primary/20 transition-all">
+                                    <span class="material-symbols-outlined text-sm">content_copy</span> Copy Text
+                                </button>
+                                <button onclick="downloadOcrText()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-surface-container text-on-surface px-4 py-2.5 rounded-xl hover:bg-surface-container-high transition-all">
+                                    <span class="material-symbols-outlined text-sm">download</span> Save as .TXT
+                                </button>
+                            </div>
+                            <button onclick="resetOcrTool()" class="text-xs font-semibold text-secondary hover:text-primary transition-colors">
+                                Clear Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. SIGN IN MODAL (MOCK) -->
+        <div id="signin-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-sm w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[28px] p-8 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0 text-center">
+                <div class="flex justify-end">
+                    <button onclick="closeModal('signin-modal')" class="p-1 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <span class="material-symbols-outlined text-[48px] text-primary">account_circle</span>
+                    <h2 class="text-xl font-bold text-on-surface">Lumina Studio Suite</h2>
+                    <p class="text-xs text-secondary leading-normal max-w-xs">Enter your details to log in. In sandbox developer mode, you can type anything to log in.</p>
+                </div>
+                <form onsubmit="handleMockSignIn(event)" class="flex flex-col gap-4 text-left">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-semibold text-secondary" for="signin-email">Email Address</label>
+                        <input id="signin-email" type="email" required placeholder="name@domain.com" class="w-full bg-surface-container-low/50 border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs font-semibold text-secondary" for="signin-pass">Security Key / Password</label>
+                        <input id="signin-pass" type="password" required placeholder="••••••••" class="w-full bg-surface-container-low/50 border border-outline-variant/60 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary">
+                    </div>
+                    <button type="submit" class="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-semibold py-3 rounded-xl shadow-md transition-colors mt-2">
+                        Authorize Log In
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 6. INFORMATION MODALS (PRIVACY & TERMS) -->
+        <div id="privacy-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-md w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[28px] p-8 shadow-2xl flex flex-col gap-4 transform scale-95 opacity-0">
+                <div class="flex items-center justify-between border-b border-outline-variant/15 pb-3">
+                    <h2 class="text-lg font-bold text-on-surface">Data Privacy Statement</h2>
+                    <button onclick="closeModal('privacy-modal')" class="p-1 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="text-xs text-secondary leading-relaxed flex flex-col gap-3">
+                    <p><strong>Lumina Convert</strong> processes all your personal files (documents, scans, photos) locally inside your browser sandbox.</p>
+                    <p>No backend uploads occur. When converting images to PDF, or extracting text using character recognition, the algorithms run offline utilizing local WebAssembly execution stacks.</p>
+                    <p>AI image creation coordinates directly client-to-API with Pollinations AI. Prompts input are public parameters; do not include secure personal data in visual generation cues.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="terms-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-md w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[28px] p-8 shadow-2xl flex flex-col gap-4 transform scale-95 opacity-0">
+                <div class="flex items-center justify-between border-b border-outline-variant/15 pb-3">
+                    <h2 class="text-lg font-bold text-on-surface">Terms of Service</h2>
+                    <button onclick="closeModal('terms-modal')" class="p-1 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="text-xs text-secondary leading-relaxed flex flex-col gap-3">
+                    <p>By using Lumina local utilities, you agree to compile and process only files you possess the authorization or copyright to manipulate.</p>
+                    <p>These sandbox utilities are provided "as is" without representation or guarantee of structural preservation accuracy. We advise inspecting compiled documents prior to high-stakes usage.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-6 right-6 flex flex-col gap-3 z-50 pointer-events-none"></div>
+
+
+    <!-- JAVASCRIPT APPLICATIONS ENGINE -->
+    <script>
+        /* ========================================================
+           1. CORE CORE STATE & THEME ENGINE
+           ======================================================== */
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        function initTheme() {
+            const html = document.documentElement;
+            const toggleIcon = document.getElementById('theme-toggle-icon');
+            if (currentTheme === 'dark') {
+                html.classList.add('dark');
+                html.classList.remove('light');
+                toggleIcon.textContent = 'light_mode';
+            } else {
+                html.classList.add('light');
+                html.classList.remove('dark');
+                toggleIcon.textContent = 'dark_mode';
+            }
+        }
+        
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+            initTheme();
+            showToast(`Theme switched to ${currentTheme === 'light' ? 'Light' : 'Dark'} mode`, 'info');
+        });
+
+        initTheme();
+
+        // Modal triggers
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            const container = modal.querySelector('.modal-container');
+            modal.classList.remove('hidden');
+            // Allow renderer block to paint hidden state
+            setTimeout(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.classList.add('opacity-100');
+                container.classList.remove('scale-95', 'opacity-0');
+                container.classList.add('scale-100', 'opacity-100');
+            }, 30);
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            const container = modal.querySelector('.modal-container');
+            container.classList.remove('scale-100', 'opacity-100');
+            container.classList.add('scale-95', 'opacity-0');
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Click outside modal triggers close
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal(modal.id);
+                }
+            });
+        });
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl border bg-surface-container-lowest/80 backdrop-blur-md shadow-lg text-on-surface border-outline-variant/30 transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto`;
+            
+            let icon = 'check_circle';
+            let iconColor = 'text-primary';
+            if (type === 'error') {
+                icon = 'error';
+                iconColor = 'text-red-500';
+            } else if (type === 'info') {
+                icon = 'info';
+                iconColor = 'text-primary';
+            }
+            
+            toast.innerHTML = `
+                <span class="material-symbols-outlined ${iconColor} text-[20px]">${icon}</span>
+                <span class="text-xs font-semibold font-sans select-none">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Mock login
+        function handleMockSignIn(e) {
+            e.preventDefault();
+            const email = document.getElementById('signin-email').value;
+            closeModal('signin-modal');
+            showToast(`Signed in successfully as ${email}`, 'success');
+        }
+
+
+        /* ========================================================
+           2. IMAGE TO PDF SUITE IMPLEMENTATION
+           ======================================================== */
+        let pdfImagesList = [];
+
+        function handlePdfFileSelect(e) {
+            const files = Array.from(e.target.files);
+            addFilesToPdfQueue(files);
+        }
+
+        function addFilesToPdfQueue(files) {
+            let loadedCount = 0;
+            const validFiles = files.filter(file => {
+                const isImage = file.type.startsWith('image/');
+                if (!isImage) {
+                    showToast(`${file.name} is not an image file`, 'error');
+                }
+                return isImage;
+            });
+
+            if (validFiles.length === 0) return;
+
+            validFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imgObj = {
+                        id: 'img_' + Math.random().toString(36).substr(2, 9),
+                        file: file,
+                        name: file.name,
+                        size: (file.size / 1024).toFixed(1) + ' KB',
+                        dataUrl: event.target.result,
+                        rotation: 0
+                    };
+                    pdfImagesList.push(imgObj);
+                    loadedCount++;
+                    if (loadedCount === validFiles.length) {
+                        updatePdfQueueUI();
+                        showToast(`Successfully added ${validFiles.length} file(s) to queue`, 'success');
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Drag and drop setup for Dropzone
+        const pdfDropzone = document.getElementById('pdf-dropzone');
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            pdfDropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                pdfDropzone.classList.add('border-primary', 'bg-primary/5');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            pdfDropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                pdfDropzone.classList.remove('border-primary', 'bg-primary/5');
+            }, false);
+        });
+
+        pdfDropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = Array.from(dt.files);
+            addFilesToPdfQueue(files);
+        });
+
+        function updatePdfQueueUI() {
+            const queueCount = document.getElementById('pdf-queue-count');
+            const previewList = document.getElementById('pdf-preview-list');
+            const emptyState = document.getElementById('pdf-empty-preview');
+            
+            queueCount.textContent = pdfImagesList.length;
+            
+            if (pdfImagesList.length === 0) {
+                previewList.innerHTML = '';
+                previewList.appendChild(emptyState);
+                return;
+            }
+
+            // Remove empty state
+            if (emptyState.parentNode === previewList) {
+                previewList.innerHTML = '';
+            } else {
+                previewList.innerHTML = '';
+            }
+
+            pdfImagesList.forEach((img, idx) => {
+                const item = document.createElement('div');
+                item.className = `flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-surface-container-low/60 border border-outline-variant/20 rounded-xl hover:border-primary/20 transition-all`;
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-surface-container-lowest border border-outline-variant/10 overflow-hidden flex-shrink-0 flex items-center justify-center relative">
+                            <img src="${img.dataUrl}" class="object-cover w-full h-full" style="transform: rotate(${img.rotation}deg)">
+                            <span class="absolute bottom-0 right-0 bg-primary text-on-primary text-[8px] px-1 rounded-tl">${idx + 1}</span>
+                        </div>
+                        <div class="flex flex-col overflow-hidden max-w-[150px] sm:max-w-[200px]">
+                            <span class="text-xs font-semibold text-on-surface truncate" title="${img.name}">${img.name}</span>
+                            <span class="text-[10px] text-secondary">${img.size} • Rotation: ${img.rotation}°</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 self-end sm:self-auto">
+                        <button onclick="rotatePdfImage(${idx})" class="p-1.5 rounded-lg hover:bg-surface-container text-secondary hover:text-on-surface transition-colors" title="Rotate 90° Clockwise">
+                            <span class="material-symbols-outlined text-[18px]">rotate_right</span>
+                        </button>
+                        <button onclick="movePdfImage(${idx}, -1)" ${idx === 0 ? 'disabled class="opacity-30 p-1.5"' : 'class="p-1.5 rounded-lg hover:bg-surface-container text-secondary hover:text-on-surface transition-colors"'} title="Move Up">
+                            <span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+                        </button>
+                        <button onclick="movePdfImage(${idx}, 1)" ${idx === pdfImagesList.length - 1 ? 'disabled class="opacity-30 p-1.5"' : 'class="p-1.5 rounded-lg hover:bg-surface-container text-secondary hover:text-on-surface transition-colors"'} title="Move Down">
+                            <span class="material-symbols-outlined text-[18px]">arrow_downward</span>
+                        </button>
+                        <button onclick="deletePdfImage(${idx})" class="p-1.5 rounded-lg hover:bg-error-container/10 text-secondary hover:text-error transition-colors" title="Remove File">
+                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
+                    </div>
+                `;
+                previewList.appendChild(item);
+            });
+        }
+
+        function rotatePdfImage(idx) {
+            pdfImagesList[idx].rotation = (pdfImagesList[idx].rotation + 90) % 360;
+            updatePdfQueueUI();
+        }
+
+        function movePdfImage(idx, dir) {
+            const targetIdx = idx + dir;
+            if (targetIdx < 0 || targetIdx >= pdfImagesList.length) return;
+            // Swap items
+            const temp = pdfImagesList[idx];
+            pdfImagesList[idx] = pdfImagesList[targetIdx];
+            pdfImagesList[targetIdx] = temp;
+            updatePdfQueueUI();
+        }
+
+        function deletePdfImage(idx) {
+            pdfImagesList.splice(idx, 1);
+            updatePdfQueueUI();
+            showToast('Image removed from compiler queue', 'info');
+        }
+
+        function clearAllPdfImages() {
+            pdfImagesList = [];
+            updatePdfQueueUI();
+            showToast('All queued images cleared', 'info');
+        }
+
+        function togglePdfOrientation() {
+            const size = document.getElementById('pdf-pagesize').value;
+            const orientContainer = document.getElementById('pdf-orientation-container');
+            if (size === 'auto') {
+                orientContainer.classList.add('hidden');
+            } else {
+                orientContainer.classList.remove('hidden');
+            }
+        }
+
+        // Asynchronous helper to load dimensions and handle canvas rotation
+        function processImageRotation(imgObj) {
+            return new Promise((resolve) => {
+                if (imgObj.rotation === 0) {
+                    resolve(imgObj.dataUrl);
+                    return;
+                }
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    if (imgObj.rotation === 90 || imgObj.rotation === 270) {
+                        canvas.width = img.height;
+                        canvas.height = img.width;
+                    } else {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                    }
+                    
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.rotate((imgObj.rotation * Math.PI) / 180);
+                    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                    
+                    resolve(canvas.toDataURL('image/jpeg', 0.92));
+                };
+                img.src = imgObj.dataUrl;
+            });
+        }
+
+        function getImageDimensions(dataUrl) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function() {
+                    resolve({ w: img.width, h: img.height });
+                };
+                img.src = dataUrl;
+            });
+        }
+
+        async function compilePdf() {
+            if (pdfImagesList.length === 0) {
+                showToast('Please add at least one image to compile', 'error');
+                return;
+            }
+
+            const progressContainer = document.getElementById('pdf-progress-container');
+            const progressBar = document.getElementById('pdf-progress-bar');
+            const progressStatus = document.getElementById('pdf-progress-status');
+            const progressPercent = document.getElementById('pdf-progress-percent');
+            
+            progressContainer.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            progressPercent.textContent = '0%';
+            
+            const { jsPDF } = window.jspdf;
+            const pdfFilename = document.getElementById('pdf-filename').value.trim() || 'lumina-converted.pdf';
+            const pageSize = document.getElementById('pdf-pagesize').value;
+            const orientation = document.getElementById('pdf-orientation').value;
+            const marginSize = parseInt(document.getElementById('pdf-margins').value) || 0;
+            const imageFit = document.getElementById('pdf-fit').value;
+
+            let doc = null;
+
+            try {
+                for (let i = 0; i < pdfImagesList.length; i++) {
+                    const step = Math.round(((i) / pdfImagesList.length) * 100);
+                    progressStatus.textContent = `Processing image ${i + 1} of ${pdfImagesList.length}...`;
+                    progressBar.style.width = step + '%';
+                    progressPercent.textContent = step + '%';
+                    
+                    const imgObj = pdfImagesList[i];
+                    // Rotate image on canvas if rotation is needed
+                    const rotatedDataUrl = await processImageRotation(imgObj);
+                    const dims = await getImageDimensions(rotatedDataUrl);
+                    
+                    let w = dims.w;
+                    let h = dims.h;
+                    
+                    let pageWidth, pageHeight, pageOrientation;
+                    
+                    if (pageSize === 'auto') {
+                        pageWidth = w + (marginSize * 2);
+                        pageHeight = h + (marginSize * 2);
+                        pageOrientation = w > h ? 'landscape' : 'portrait';
+                        
+                        if (i === 0) {
+                            doc = new jsPDF({
+                                orientation: pageOrientation,
+                                unit: 'px',
+                                format: [pageWidth, pageHeight]
+                            });
+                        } else {
+                            doc.addPage([pageWidth, pageHeight], pageOrientation);
+                        }
+                    } else {
+                        // Standard size metrics in mm.
+                        pageOrientation = orientation;
+                        if (pageSize === 'a4') {
+                            pageWidth = orientation === 'portrait' ? 210 : 297;
+                            pageHeight = orientation === 'portrait' ? 297 : 210;
+                        } else { // Letter
+                            pageWidth = orientation === 'portrait' ? 215.9 : 279.4;
+                            pageHeight = orientation === 'portrait' ? 279.4 : 215.9;
+                        }
+                        
+                        if (i === 0) {
+                            doc = new jsPDF({
+                                orientation: pageOrientation,
+                                unit: 'mm',
+                                format: pageSize
+                            });
+                        } else {
+                            doc.addPage(pageSize, pageOrientation);
+                        }
+                    }
+
+                    // Render geometry
+                    let x, y, rWidth, rHeight;
+                    if (pageSize === 'auto') {
+                        x = marginSize;
+                        y = marginSize;
+                        rWidth = w;
+                        rHeight = h;
+                        doc.addImage(rotatedDataUrl, 'JPEG', x, y, rWidth, rHeight);
+                    } else {
+                        const printableW = pageWidth - (marginSize * 2);
+                        const printableH = pageHeight - (marginSize * 2);
+                        
+                        const pageAspect = printableW / printableH;
+                        const imgAspect = w / h;
+                        
+                        if (imageFit === 'contain') {
+                            if (imgAspect > pageAspect) {
+                                rWidth = printableW;
+                                rHeight = printableW / imgAspect;
+                            } else {
+                                rHeight = printableH;
+                                rWidth = printableH * imgAspect;
+                            }
+                        } else { // Cover
+                            if (imgAspect > pageAspect) {
+                                rHeight = printableH;
+                                rWidth = printableH * imgAspect;
+                            } else {
+                                rWidth = printableW;
+                                rHeight = printableW / imgAspect;
+                            }
+                        }
+                        
+                        x = marginSize + (printableW - rWidth) / 2;
+                        y = marginSize + (printableH - rHeight) / 2;
+                        
+                        doc.addImage(rotatedDataUrl, 'JPEG', x, y, rWidth, rHeight);
+                    }
+                }
+                
+                progressBar.style.width = '100%';
+                progressPercent.textContent = '100%';
+                progressStatus.textContent = 'Saving PDF document...';
+                
+                setTimeout(() => {
+                    doc.save(pdfFilename);
+                    progressContainer.classList.add('hidden');
+                    showToast('PDF compiled successfully!', 'success');
+                }, 400);
+
+            } catch (err) {
+                console.error(err);
+                progressContainer.classList.add('hidden');
+                showToast('Failed to compile PDF: ' + err.message, 'error');
+            }
+        }
+
+
+        /* ========================================================
+           3. TEXT TO IMAGE ENGINE (POLLINATIONS)
+           ======================================================== */
+        let currentGeneratedImageBlob = null;
+        let currentGeneratedImageUrl = null;
+
+        function getStylePresetKeywords(style) {
+            switch(style) {
+                case 'photo':
+                    return 'highly detailed photorealistic raw photography, 8k resolution, cinematic atmosphere, sharp focus, dslr shot';
+                case 'digital':
+                    return 'vibrant digital art illustration, clean vector style, vivid rendering, stylized concept artwork';
+                case 'cyberpunk':
+                    return 'futuristic cyberpunk synthwave scenery, neon glowing lights, holographic elements, cinematic retro-futurism';
+                case 'anime':
+                    return 'classic hand-drawn anime keyframe illustration, studio ghibli layout style, soft colors';
+                case 'painting':
+                    return 'textured canvas oil painting, expressive brushstrokes, warm ambient lighting, fine art gallery piece';
+                default:
+                    return '';
+            }
+        }
+
+        async function generateTextToImage() {
+            const promptInput = document.getElementById('t2i-prompt').value.trim();
+            const aspect = document.getElementById('t2i-aspect').value;
+            const style = document.getElementById('t2i-style').value;
+            
+            if (!promptInput) {
+                showToast('Prompt text cannot be empty', 'error');
+                return;
+            }
+
+            const loader = document.getElementById('t2i-loader');
+            const loaderStatus = document.getElementById('t2i-loader-status');
+            const emptyState = document.getElementById('t2i-empty');
+            const outputImg = document.getElementById('t2i-output-img');
+            const actionsConsole = document.getElementById('t2i-actions');
+            const generateBtn = document.getElementById('t2i-generate-btn');
+
+            // Reset UI
+            loader.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            outputImg.classList.add('hidden');
+            actionsConsole.classList.add('hidden');
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-50');
+
+            // Render details
+            const funnyStatus = [
+                'Drafting composition structure...',
+                'Applying base color values...',
+                'Rendering light dynamics...',
+                'Blending texture resolutions...',
+                'Polishing atmospheric details...'
+            ];
+            
+            let statusIdx = 0;
+            const statusInterval = setInterval(() => {
+                loaderStatus.textContent = funnyStatus[statusIdx % funnyStatus.length];
+                statusIdx++;
+            }, 1000);
+
+            // Compute dimensions based on aspect ratio
+            let width = 1024, height = 1024;
+            if (aspect === '16:9') {
+                width = 1280;
+                height = 720;
+            } else if (aspect === '9:16') {
+                width = 720;
+                height = 1280;
+            }
+
+            const styleKeywords = getStylePresetKeywords(style);
+            const fullPrompt = encodeURIComponent(promptInput + (styleKeywords ? `, ${styleKeywords}` : ''));
+            const seed = Math.floor(Math.random() * 10000000);
+            const apiUrl = `https://image.pollinations.ai/prompt/${fullPrompt}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
+
+            try {
+                // Fetch image as blob
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('API server returned status code ' + response.status);
+                
+                const blob = await response.blob();
+                currentGeneratedImageBlob = blob;
+                
+                if (currentGeneratedImageUrl) {
+                    URL.revokeObjectURL(currentGeneratedImageUrl);
+                }
+                currentGeneratedImageUrl = URL.createObjectURL(blob);
+                
+                // Show Image
+                outputImg.src = currentGeneratedImageUrl;
+                outputImg.onload = function() {
+                    clearInterval(statusInterval);
+                    loader.classList.add('hidden');
+                    outputImg.classList.remove('hidden');
+                    actionsConsole.classList.remove('hidden');
+                    generateBtn.disabled = false;
+                    generateBtn.classList.remove('opacity-50');
+                    showToast('Visual layout successfully generated', 'success');
+                };
+
+            } catch (err) {
+                clearInterval(statusInterval);
+                loader.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-50');
+                showToast('Failed to generate image: ' + err.message, 'error');
+            }
+        }
+
+        function downloadGeneratedImage() {
+            if (!currentGeneratedImageUrl) return;
+            const a = document.createElement('a');
+            a.href = currentGeneratedImageUrl;
+            a.download = 'lumina-art-' + Date.now() + '.jpg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('Image download initialized', 'success');
+        }
+
+        function copyGeneratedImageLink() {
+            const promptInput = document.getElementById('t2i-prompt').value.trim();
+            const aspect = document.getElementById('t2i-aspect').value;
+            const style = document.getElementById('t2i-style').value;
+            
+            let width = 1024, height = 1024;
+            if (aspect === '16:9') {
+                width = 1280;
+                height = 720;
+            } else if (aspect === '9:16') {
+                width = 720;
+                height = 1280;
+            }
+
+            const styleKeywords = getStylePresetKeywords(style);
+            const fullPrompt = encodeURIComponent(promptInput + (styleKeywords ? `, ${styleKeywords}` : ''));
+            const link = `https://image.pollinations.ai/prompt/${fullPrompt}?width=${width}&height=${height}&nologo=true`;
+            
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('Direct image generation URL copied!', 'success');
+            }).catch(err => {
+                showToast('Failed to copy link: ' + err.message, 'error');
+            });
+        }
+
+        function transferGeneratedImageToPdf() {
+            if (!currentGeneratedImageUrl || !currentGeneratedImageBlob) return;
+            
+            // Package blob in queue
+            const file = new File([currentGeneratedImageBlob], 'lumina-ai-visual.jpg', { type: 'image/jpeg' });
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgObj = {
+                    id: 'img_' + Math.random().toString(36).substr(2, 9),
+                    file: file,
+                    name: file.name,
+                    size: (file.size / 1024).toFixed(1) + ' KB',
+                    dataUrl: e.target.result,
+                    rotation: 0
+                };
+                pdfImagesList.push(imgObj);
+                updatePdfQueueUI();
+                closeModal('text-to-image-modal');
+                openModal('image-to-pdf-modal');
+                showToast('Transferred AI artwork directly to PDF queue', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+
+        /* ========================================================
+           4. TEXT TO IMAGE & PDF (PRESENTATION ENGINE)
+           ======================================================== */
+        let presentationImages = [];
+
+        async function generateTextToPdfPresentation() {
+            const promptInput = document.getElementById('t2pdf-prompt').value.trim();
+            const pageCount = parseInt(document.getElementById('t2pdf-page-count').value);
+            const theme = document.getElementById('t2pdf-style').value;
+
+            if (!promptInput) {
+                showToast('Creative prompt input cannot be empty', 'error');
+                return;
+            }
+
+            const progressContainer = document.getElementById('t2pdf-progress-container');
+            const progressBar = document.getElementById('t2pdf-progress-bar');
+            const progressStatus = document.getElementById('t2pdf-progress-status');
+            const progressPercent = document.getElementById('t2pdf-progress-percent');
+            const slidesPreview = document.getElementById('t2pdf-slides-preview');
+            const generateBtn = document.getElementById('t2pdf-generate-btn');
+            const downloadBtn = document.getElementById('t2pdf-download-btn');
+
+            // Reset states
+            progressContainer.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            progressPercent.textContent = '0%';
+            slidesPreview.innerHTML = '';
+            downloadBtn.classList.add('hidden');
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-50');
+            presentationImages = [];
+
+            // Get style description keywords
+            const themeKeywords = getStylePresetKeywords(theme === 'minimal' ? 'photo' : theme);
+
+            // Construct array of prompts matching a narrative structure
+            const slidePrompts = [];
+            for (let i = 1; i <= pageCount; i++) {
+                if (i === 1) {
+                    slidePrompts.push(`${promptInput}, cover design slide page 1, elegant presentation layout, ${themeKeywords}`);
+                } else if (i === pageCount) {
+                    slidePrompts.push(`${promptInput}, closing conclusion scene page ${i}, majestic high resolution, ${themeKeywords}`);
+                } else {
+                    slidePrompts.push(`${promptInput}, sequence page ${i}, informative conceptual detail visual, ${themeKeywords}`);
+                }
+            }
+
+            try {
+                for (let i = 0; i < pageCount; i++) {
+                    const step = Math.round((i / pageCount) * 100);
+                    progressStatus.textContent = `Rendering slide page ${i + 1} of ${pageCount}...`;
+                    progressBar.style.width = step + '%';
+                    progressPercent.textContent = step + '%';
+
+                    const promptText = slidePrompts[i];
+                    const seed = Math.floor(Math.random() * 10000000) + i;
+                    const encodedPrompt = encodeURIComponent(promptText);
+                    const width = 1280, height = 720; // 16:9 Presentation Standard
+                    const apiUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
+
+                    // Fetch Image
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error(`API failed at slide ${i + 1}`);
+                    const blob = await response.blob();
+                    
+                    const imgUrl = URL.createObjectURL(blob);
+                    presentationImages.push({
+                        url: imgUrl,
+                        blob: blob,
+                        prompt: slidePrompts[i],
+                        idx: i + 1
+                    });
+
+                    // Add slide preview to layout
+                    const slideThumb = document.createElement('div');
+                    slideThumb.className = `w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm flex flex-col gap-2 p-3`;
+                    slideThumb.innerHTML = `
+                        <div class="aspect-video w-full rounded-lg overflow-hidden border border-outline-variant/10 relative bg-slate-900/5">
+                            <img src="${imgUrl}" class="object-cover w-full h-full">
+                            <span class="absolute top-2 left-2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full">Slide ${i + 1}</span>
+                        </div>
+                        <p class="text-[10px] text-secondary font-mono leading-relaxed truncate px-1">${slidePrompts[i]}</p>
+                    `;
+                    slidesPreview.appendChild(slideThumb);
+                }
+
+                // Finalize process
+                progressBar.style.width = '100%';
+                progressPercent.textContent = '100%';
+                progressStatus.textContent = 'Deck rendering completed!';
+                
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                    generateBtn.disabled = false;
+                    generateBtn.classList.remove('opacity-50');
+                    downloadBtn.classList.remove('hidden');
+                    showToast('Slide deck generated! Export to PDF enabled.', 'success');
+                }, 400);
+
+            } catch (err) {
+                console.error(err);
+                progressContainer.classList.add('hidden');
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-50');
+                slidesPreview.innerHTML = `
+                    <div class="text-center p-6 text-error">
+                        <span class="material-symbols-outlined text-[32px] mb-1">warning</span>
+                        <p class="text-xs font-semibold">Presentation compilation failed: ${err.message}</p>
+                    </div>
+                `;
+                showToast('Failed to compile presentation deck', 'error');
+            }
+        }
+
+        async function downloadGeneratedPresentation() {
+            if (presentationImages.length === 0) return;
+            
+            showToast('Assembling presentation PDF...', 'info');
+            const { jsPDF } = window.jspdf;
+            
+            // Standard A4 landscape dimensions: 297 x 210 mm
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            try {
+                for (let i = 0; i < presentationImages.length; i++) {
+                    const item = presentationImages[i];
+                    
+                    // Convert blob to base64 dataUrl
+                    const reader = new FileReader();
+                    const dataUrl = await new Promise((resolve) => {
+                        reader.onload = e => resolve(e.target.result);
+                        reader.readAsDataURL(item.blob);
+                    });
+
+                    if (i > 0) {
+                        doc.addPage('a4', 'landscape');
+                    }
+
+                    // Draw image centered in printable slide field
+                    // A4 landscape dimensions: 297w x 210h. 16:9 aspect image fits A4 landscape perfectly with nice margins.
+                    const imgW = 277; // Margins left/right: 10mm
+                    const imgH = 277 * (720 / 1280); // ~155.8mm. Margins top/bottom: 27.1mm
+                    const x = 10;
+                    const y = (210 - imgH) / 2;
+
+                    doc.addImage(dataUrl, 'JPEG', x, y, imgW, imgH);
+                    
+                    // Draw styled metadata footer for slide deck
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8);
+                    doc.setTextColor(111, 118, 135);
+                    doc.text(`Lumina Presentation Suite  |  Slide ${item.idx} of ${presentationImages.length}`, 15, 202);
+                }
+
+                doc.save('lumina-deck-' + Date.now() + '.pdf');
+                showToast('Presentation PDF download initialized!', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Could not compile presentation structure: ' + err.message, 'error');
+            }
+        }
+
+
+        /* ========================================================
+           5. EXTRACT TEXT (OCR) ENGINE
+           ======================================================== */
+        let ocrInputFile = null;
+
+        function handleOcrFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('Uploaded file must be a graphic format', 'error');
+                return;
+            }
+
+            ocrInputFile = file;
+
+            // Load Preview
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imgEl = document.getElementById('ocr-preview-img');
+                const innerDzone = document.getElementById('ocr-dropzone-inner');
+                const runBtn = document.getElementById('ocr-trigger-btn');
+                
+                imgEl.src = event.target.result;
+                imgEl.classList.remove('hidden');
+                innerDzone.classList.add('hidden');
+                
+                runBtn.removeAttribute('disabled');
+                showToast('Graphic loaded. Ready for OCR processing.', 'info');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Drag and drop setup for OCR
+        const ocrDropzone = document.getElementById('ocr-dropzone');
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            ocrDropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                ocrDropzone.classList.add('border-primary', 'bg-primary/5');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            ocrDropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                ocrDropzone.classList.remove('border-primary', 'bg-primary/5');
+            }, false);
+        });
+
+        ocrDropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            if (file) {
+                document.getElementById('ocr-file-input').files = dt.files;
+                handleOcrFileSelect({ target: { files: dt.files } });
+            }
+        });
+
+        async function runOCR() {
+            if (!ocrInputFile) return;
+
+            const loader = document.getElementById('ocr-loader');
+            const loaderStatus = document.getElementById('ocr-loader-status');
+            const progressBar = document.getElementById('ocr-progress-bar');
+            const outputText = document.getElementById('ocr-output-text');
+            const actionsConsole = document.getElementById('ocr-actions');
+            const stats = document.getElementById('ocr-stats');
+
+            loader.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            loaderStatus.textContent = 'Spawning OCR Engine worker...';
+            actionsConsole.classList.add('hidden');
+
+            try {
+                // Initialize Tesseract Engine
+                const worker = await Tesseract.createWorker('eng', 1, {
+                    logger: m => {
+                        console.log(m);
+                        if (m.status === 'recognizing text') {
+                            const percent = Math.round(m.progress * 100);
+                            progressBar.style.width = percent + '%';
+                            loaderStatus.textContent = `Extracting characters: ${percent}%`;
+                        } else {
+                            loaderStatus.textContent = m.status + '...';
+                        }
+                    }
+                });
+
+                const ret = await worker.recognize(ocrInputFile);
+                const text = ret.data.text;
+                
+                await worker.terminate();
+
+                outputText.value = text;
+                loader.classList.add('hidden');
+                actionsConsole.classList.remove('hidden');
+
+                // Generate Stats
+                const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+                const chars = text.length;
+                stats.textContent = `${words} words | ${chars} characters`;
+                stats.classList.remove('hidden');
+
+                showToast('OCR extraction successfully completed!', 'success');
+
+            } catch (err) {
+                console.error(err);
+                loader.classList.add('hidden');
+                showToast('OCR engine error: ' + err.message, 'error');
+            }
+        }
+
+        function copyOcrText() {
+            const txt = document.getElementById('ocr-output-text').value;
+            if (!txt) return;
+            navigator.clipboard.writeText(txt).then(() => {
+                showToast('Text copied to clipboard!', 'success');
+            }).catch(err => {
+                showToast('Failed to copy text: ' + err.message, 'error');
+            });
+        }
+
+        function downloadOcrText() {
+            const txt = document.getElementById('ocr-output-text').value;
+            if (!txt) return;
+            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'extracted-text-' + Date.now() + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Document text downloaded', 'success');
+        }
+
+        function resetOcrTool() {
+            ocrInputFile = null;
+            document.getElementById('ocr-file-input').value = '';
+            document.getElementById('ocr-preview-img').src = '';
+            document.getElementById('ocr-preview-img').classList.add('hidden');
+            document.getElementById('ocr-dropzone-inner').classList.remove('hidden');
+            document.getElementById('ocr-trigger-btn').setAttribute('disabled', 'true');
+            document.getElementById('ocr-output-text').value = '';
+            document.getElementById('ocr-stats').classList.add('hidden');
+            document.getElementById('ocr-actions').classList.add('hidden');
+            showToast('OCR state successfully reset', 'info');
+        }
+    </script>
+</body>
+</html>
