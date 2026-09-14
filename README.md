@@ -33,6 +33,19 @@ Lumina Convert is a premium, client-side web utility suite designed for creators
    - Complete Light and Dark mode mapping using CSS variables and Tailwind class toggles.
    - Interactive glassmorphic modal overlays, custom scrollbars, and a responsive Toast alert notification banner.
 
+6. **Text to Document Image (Local)**
+   - Type plain text and render it onto white image pages with normal, readable font sizing.
+   - Supports multi-page text rendering for longer essays.
+   - Download individual rendered pages or export all rendered pages as a PDF.
+
+7. **Text to PDF (Local)**
+   - Paste or write text directly in the app and generate a clean, multipage PDF.
+   - Preserves paragraph breaks and wraps long lines to fit standard A4 pages.
+
+8. **PDF to Image (Local)**
+   - Upload PDF files and specify exactly which pages to convert (single pages or ranges).
+   - Exports selected pages as downloadable PNG images.
+
 ## Privacy Architecture
 
 Lumina Convert prioritizes zero data retention:
