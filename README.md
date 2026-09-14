@@ -2,7 +2,7 @@
 
 Lumina Convert is a premium, client-side web utility suite designed for creators, legal professionals, and designers who value speed, privacy, and aesthetic clarity. The application operates entirely inside the browser sandbox, processing all files locally without uploading user data to any external server.
 
-![Lumina Convert Banner](screen.png)
+![Lumina Convert Home Screen](screen.png)
 
 ## Core Features
 
