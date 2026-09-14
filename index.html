@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.js"></script>
     
     <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -295,6 +296,60 @@
                             <span class="material-symbols-outlined text-[48px] text-secondary group-hover:text-primary transition-colors">photo_camera</span>
                             <p class="text-sm font-semibold text-secondary">Drop Image to Scan</p>
                             <button class="bg-primary text-on-primary text-xs font-semibold px-5 py-2 rounded-full mt-2 group-hover:scale-105 transition-transform">Open Scanner</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text to Document Image Card -->
+                <div onclick="openModal('text-doc-image-modal')" class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/40 rounded-[28px] p-8 flex flex-col gap-6 relative overflow-hidden group upload-glow h-full cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="material-symbols-outlined text-[32px] text-primary">article</span>
+                                <h2 class="text-xl font-semibold text-on-surface">Text to Document Image</h2>
+                            </div>
+                            <p class="text-secondary leading-relaxed mb-6">Write plain text and render it on clean white pages as readable image sheets.</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center gap-3 w-full border-2 border-dashed border-outline-variant/60 rounded-xl p-8 bg-surface-container-low/40 group-hover:border-primary/50 transition-colors">
+                            <span class="material-symbols-outlined text-[48px] text-secondary group-hover:text-primary transition-colors">text_fields</span>
+                            <p class="text-sm font-semibold text-secondary">Type Text, Render White Pages</p>
+                            <button class="bg-primary text-on-primary text-xs font-semibold px-5 py-2 rounded-full mt-2 group-hover:scale-105 transition-transform">Open Tool</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text to PDF Card -->
+                <div onclick="openModal('text-to-pdf-doc-modal')" class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/40 rounded-[28px] p-8 flex flex-col gap-6 relative overflow-hidden group upload-glow h-full cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="material-symbols-outlined text-[32px] text-primary">description</span>
+                                <h2 class="text-xl font-semibold text-on-surface">Text to PDF</h2>
+                            </div>
+                            <p class="text-secondary leading-relaxed mb-6">Paste notes, letters, or essays and export them directly to a multipage PDF.</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center gap-3 w-full border-2 border-dashed border-outline-variant/60 rounded-xl p-8 bg-surface-container-low/40 group-hover:border-primary/50 transition-colors">
+                            <span class="material-symbols-outlined text-[48px] text-secondary group-hover:text-primary transition-colors">docs</span>
+                            <p class="text-sm font-semibold text-secondary">Convert Text into PDF</p>
+                            <button class="bg-primary text-on-primary text-xs font-semibold px-5 py-2 rounded-full mt-2 group-hover:scale-105 transition-transform">Open Tool</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF to Image Card -->
+                <div onclick="openModal('pdf-to-image-modal')" class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/40 rounded-[28px] p-8 flex flex-col gap-6 relative overflow-hidden group upload-glow h-full cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="material-symbols-outlined text-[32px] text-primary">picture_as_pdf</span>
+                                <h2 class="text-xl font-semibold text-on-surface">PDF to Image</h2>
+                            </div>
+                            <p class="text-secondary leading-relaxed mb-6">Upload a PDF, choose page numbers, and convert selected pages into image files.</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center gap-3 w-full border-2 border-dashed border-outline-variant/60 rounded-xl p-8 bg-surface-container-low/40 group-hover:border-primary/50 transition-colors">
+                            <span class="material-symbols-outlined text-[48px] text-secondary group-hover:text-primary transition-colors">imagesmode</span>
+                            <p class="text-sm font-semibold text-secondary">Choose PDF Pages to Export</p>
+                            <button class="bg-primary text-on-primary text-xs font-semibold px-5 py-2 rounded-full mt-2 group-hover:scale-105 transition-transform">Open Tool</button>
                         </div>
                     </div>
                 </div>
@@ -738,7 +793,147 @@
             </div>
         </div>
 
-        <!-- 5. SIGN IN MODAL (MOCK) -->
+
+        <!-- 5. TEXT TO DOCUMENT IMAGE MODAL -->
+        <div id="text-doc-image-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 md:p-8 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-5xl w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-6">
+                    <div>
+                        <button onclick="closeModal('text-doc-image-modal')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary hover:text-primary mb-2 transition-colors">
+                            <span class="material-symbols-outlined text-xs">arrow_back</span> Back to Suite
+                        </button>
+                        <h2 class="text-2xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">article</span> Text to Document Image
+                        </h2>
+                        <p class="text-sm text-secondary mt-1">Write any text and render white document pages with normal-sized readable font.</p>
+                    </div>
+                    <button onclick="closeModal('text-doc-image-modal')" class="p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center self-end md:self-auto">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 flex flex-col gap-4">
+                        <label for="text-doc-input" class="text-xs font-semibold text-secondary">Text Content</label>
+                        <textarea id="text-doc-input" rows="16" class="w-full bg-surface-container-low/50 border border-outline-variant/60 rounded-xl p-4 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary resize-none" placeholder="Type text here (for example: hi)"></textarea>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label for="text-doc-image-filename" class="text-xs font-semibold text-secondary">Image Filename Prefix</label>
+                            <input id="text-doc-image-filename" type="text" value="text-page" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary">
+                        </div>
+
+                        <div class="flex flex-col gap-3 mt-2">
+                            <button onclick="renderTextDocumentImages()" class="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-semibold py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95">
+                                <span class="material-symbols-outlined text-[18px]">draw</span> Render Pages
+                            </button>
+                            <button onclick="downloadCurrentTextDocumentImage()" class="w-full bg-surface-container text-on-surface font-semibold py-3 rounded-xl border border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+                                Download Selected Image
+                            </button>
+                            <button onclick="exportTextDocumentImagesToPdf()" class="w-full bg-primary/10 text-primary font-semibold py-3 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors">
+                                Export Rendered Pages as PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 flex flex-col gap-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <h3 class="text-sm font-bold text-on-surface">Rendered Page Preview</h3>
+                            <div class="flex items-center gap-2">
+                                <label for="text-doc-page-select" class="text-xs text-secondary">Page</label>
+                                <select id="text-doc-page-select" onchange="previewSelectedTextDocumentPage()" class="bg-surface-container-lowest border border-outline-variant/60 rounded-lg px-3 py-1.5 text-xs text-on-surface min-w-[86px]"></select>
+                            </div>
+                        </div>
+                        <div class="border border-outline-variant/30 rounded-2xl p-5 bg-surface-container-low/20 min-h-[420px] flex items-center justify-center">
+                            <img id="text-doc-preview-img" class="hidden max-h-[420px] border border-outline-variant/20 rounded-lg bg-white object-contain" alt="Rendered text page">
+                            <p id="text-doc-empty" class="text-xs text-secondary text-center">Rendered pages will appear here.</p>
+                        </div>
+                        <p id="text-doc-page-summary" class="text-xs text-secondary">No pages rendered yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. TEXT TO PDF MODAL -->
+        <div id="text-to-pdf-doc-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 md:p-8 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-4xl w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-6">
+                    <div>
+                        <button onclick="closeModal('text-to-pdf-doc-modal')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary hover:text-primary mb-2 transition-colors">
+                            <span class="material-symbols-outlined text-xs">arrow_back</span> Back to Suite
+                        </button>
+                        <h2 class="text-2xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">description</span> Text to PDF
+                        </h2>
+                        <p class="text-sm text-secondary mt-1">Convert long notes or essays into a simple multi-page PDF document.</p>
+                    </div>
+                    <button onclick="closeModal('text-to-pdf-doc-modal')" class="p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center self-end md:self-auto">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="text-pdf-input" class="text-xs font-semibold text-secondary">Text Content</label>
+                        <textarea id="text-pdf-input" rows="14" class="w-full bg-surface-container-low/50 border border-outline-variant/60 rounded-xl p-4 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary resize-none" placeholder="Paste or type the text you want in your PDF"></textarea>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+                        <div class="flex flex-col gap-1.5 sm:w-80">
+                            <label for="text-pdf-filename" class="text-xs font-semibold text-secondary">Output PDF Filename</label>
+                            <input id="text-pdf-filename" type="text" value="text-document.pdf" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary">
+                        </div>
+                        <button onclick="convertTextToPdfDocument()" class="bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-semibold py-3 px-6 rounded-xl shadow-lg transition-all active:scale-95">
+                            Generate PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. PDF TO IMAGE MODAL -->
+        <div id="pdf-to-image-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 md:p-8 opacity-0 pointer-events-none">
+            <div class="modal-container max-w-5xl w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-6">
+                    <div>
+                        <button onclick="closeModal('pdf-to-image-modal')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary hover:text-primary mb-2 transition-colors">
+                            <span class="material-symbols-outlined text-xs">arrow_back</span> Back to Suite
+                        </button>
+                        <h2 class="text-2xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">picture_as_pdf</span> PDF to Image
+                        </h2>
+                        <p class="text-sm text-secondary mt-1">Upload a PDF and select exactly which pages to convert into downloadable images.</p>
+                    </div>
+                    <button onclick="closeModal('pdf-to-image-modal')" class="p-2 rounded-full hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center self-end md:self-auto">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 flex flex-col gap-4">
+                        <div class="flex flex-col gap-1.5">
+                            <label for="pdf-image-file-input" class="text-xs font-semibold text-secondary">Source PDF</label>
+                            <input id="pdf-image-file-input" type="file" accept="application/pdf" onchange="handlePdfToImageFileSelect(event)" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2 text-sm text-on-surface">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label for="pdf-image-pages" class="text-xs font-semibold text-secondary">Pages to convert</label>
+                            <input id="pdf-image-pages" type="text" placeholder="Examples: 1,3,5-7" class="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-2 text-sm text-on-surface focus:ring-1 focus:ring-primary focus:border-primary">
+                            <p class="text-[11px] text-secondary">Enter page numbers or ranges. You'll be asked to choose pages for conversion.</p>
+                        </div>
+                        <button onclick="convertPdfToImages()" class="w-full bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-semibold py-3.5 rounded-xl shadow-lg transition-all active:scale-95">
+                            Convert Selected Pages
+                        </button>
+                    </div>
+
+                    <div class="lg:col-span-7 flex flex-col gap-4">
+                        <h3 class="text-sm font-bold text-on-surface">Converted Images</h3>
+                        <div id="pdf-image-results" class="border border-outline-variant/30 rounded-2xl p-6 bg-surface-container-low/20 min-h-[360px] max-h-[500px] overflow-y-auto flex flex-col gap-4">
+                            <p class="text-xs text-secondary">Converted pages will appear here as images with download buttons.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. SIGN IN MODAL (MOCK) -->
         <div id="signin-modal" class="modal-overlay hidden fixed inset-0 bg-background/90 backdrop-blur-xl overflow-y-auto flex items-center justify-center p-4 opacity-0 pointer-events-none">
             <div class="modal-container max-w-sm w-full bg-surface-container-lowest border border-outline-variant/30 rounded-[28px] p-8 shadow-2xl flex flex-col gap-6 transform scale-95 opacity-0 text-center">
                 <div class="flex justify-end">
@@ -1589,7 +1784,325 @@
 
 
         /* ========================================================
-           5. EXTRACT TEXT (OCR) ENGINE
+           5. TEXT TO DOCUMENT IMAGE ENGINE
+           ======================================================== */
+        let renderedTextDocumentPages = [];
+
+        function normalizeFilename(name, fallback) {
+            const cleaned = (name || '').trim().replace(/[\\/:*?"<>|]/g, '_');
+            return cleaned || fallback;
+        }
+
+        function paginateTextForCanvas(text, ctx, maxWidth, maxLinesPerPage) {
+            const paragraphs = text.replace(/\r/g, '').split('\n');
+            const pages = [];
+            let currentLines = [];
+
+            const pushLine = (line) => {
+                if (currentLines.length >= maxLinesPerPage) {
+                    pages.push(currentLines);
+                    currentLines = [];
+                }
+                currentLines.push(line);
+            };
+
+            paragraphs.forEach((paragraph, idx) => {
+                if (paragraph.trim() === '') {
+                    pushLine('');
+                } else {
+                    const words = paragraph.split(/\s+/);
+                    let line = '';
+                    words.forEach((word) => {
+                        const candidate = line ? `${line} ${word}` : word;
+                        if (ctx.measureText(candidate).width <= maxWidth) {
+                            line = candidate;
+                        } else {
+                            if (line) pushLine(line);
+                            line = word;
+                        }
+                    });
+                    if (line) pushLine(line);
+                }
+
+                if (idx !== paragraphs.length - 1 && currentLines.length >= maxLinesPerPage) {
+                    pages.push(currentLines);
+                    currentLines = [];
+                }
+            });
+
+            if (currentLines.length > 0) {
+                pages.push(currentLines);
+            }
+
+            return pages.length ? pages : [['']];
+        }
+
+        function renderTextDocumentImages() {
+            const text = document.getElementById('text-doc-input').value.trim();
+            if (!text) {
+                showToast('Please enter text to render on image pages', 'error');
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1240;
+            canvas.height = 1754;
+
+            const margin = 96;
+            const fontSize = 32;
+            const lineHeight = 48;
+            const maxWidth = canvas.width - margin * 2;
+            const maxLinesPerPage = Math.floor((canvas.height - margin * 2) / lineHeight);
+
+            ctx.font = `${fontSize}px Arial`;
+            const pages = paginateTextForCanvas(text, ctx, maxWidth, maxLinesPerPage);
+
+            renderedTextDocumentPages = pages.map((lines) => {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#111111';
+                ctx.font = `${fontSize}px Arial`;
+                ctx.textBaseline = 'top';
+
+                lines.forEach((line, idx) => {
+                    ctx.fillText(line, margin, margin + (idx * lineHeight));
+                });
+
+                return canvas.toDataURL('image/png');
+            });
+
+            const pageSelect = document.getElementById('text-doc-page-select');
+            pageSelect.innerHTML = renderedTextDocumentPages
+                .map((_, idx) => `<option value="${idx}">Page ${idx + 1}</option>`)
+                .join('');
+
+            document.getElementById('text-doc-empty').classList.add('hidden');
+            const summary = `${renderedTextDocumentPages.length} page(s) rendered with normal font size.`;
+            document.getElementById('text-doc-page-summary').textContent = summary;
+            previewSelectedTextDocumentPage();
+            showToast(summary, 'success');
+        }
+
+        function previewSelectedTextDocumentPage() {
+            if (!renderedTextDocumentPages.length) return;
+            const pageSelect = document.getElementById('text-doc-page-select');
+            const idx = parseInt(pageSelect.value || '0', 10);
+            const preview = document.getElementById('text-doc-preview-img');
+            preview.src = renderedTextDocumentPages[idx];
+            preview.classList.remove('hidden');
+        }
+
+        function downloadCurrentTextDocumentImage() {
+            if (!renderedTextDocumentPages.length) {
+                showToast('Render pages first before downloading images', 'error');
+                return;
+            }
+            const pageSelect = document.getElementById('text-doc-page-select');
+            const idx = parseInt(pageSelect.value || '0', 10);
+            const baseName = normalizeFilename(document.getElementById('text-doc-image-filename').value, 'text-page');
+            const a = document.createElement('a');
+            a.href = renderedTextDocumentPages[idx];
+            a.download = `${baseName}-${idx + 1}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast(`Page ${idx + 1} image download started`, 'success');
+        }
+
+        function exportTextDocumentImagesToPdf() {
+            if (!renderedTextDocumentPages.length) {
+                showToast('Render text pages before exporting PDF', 'error');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const baseName = normalizeFilename(document.getElementById('text-doc-image-filename').value, 'text-page');
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'px', format: [1240, 1754] });
+
+            renderedTextDocumentPages.forEach((img, idx) => {
+                if (idx > 0) doc.addPage([1240, 1754], 'portrait');
+                doc.addImage(img, 'PNG', 0, 0, 1240, 1754);
+            });
+
+            doc.save(`${baseName}.pdf`);
+            showToast('Text page PDF download initialized', 'success');
+        }
+
+
+        /* ========================================================
+           6. TEXT TO PDF ENGINE
+           ======================================================== */
+        function convertTextToPdfDocument() {
+            const input = document.getElementById('text-pdf-input').value.trim();
+            if (!input) {
+                showToast('Please enter text to generate PDF', 'error');
+                return;
+            }
+
+            const filename = normalizeFilename(document.getElementById('text-pdf-filename').value, 'text-document')
+                .replace(/\.pdf$/i, '') + '.pdf';
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 15;
+            const lineHeight = 7;
+            const maxLineWidth = pageWidth - (margin * 2);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+
+            const paragraphs = input.replace(/\r/g, '').split('\n');
+            let y = margin;
+
+            paragraphs.forEach((paragraph, pIdx) => {
+                const wrapped = paragraph.trim() === '' ? [''] : doc.splitTextToSize(paragraph, maxLineWidth);
+                wrapped.forEach((line) => {
+                    if (y > pageHeight - margin) {
+                        doc.addPage();
+                        y = margin;
+                    }
+                    doc.text(line, margin, y);
+                    y += lineHeight;
+                });
+
+                if (pIdx !== paragraphs.length - 1) {
+                    y += lineHeight * 0.4;
+                    if (y > pageHeight - margin) {
+                        doc.addPage();
+                        y = margin;
+                    }
+                }
+            });
+
+            doc.save(filename);
+            showToast('Text to PDF conversion completed', 'success');
+        }
+
+
+        /* ========================================================
+           7. PDF TO IMAGE ENGINE
+           ======================================================== */
+        let pdfToImageFile = null;
+        let pdfToImageUrls = [];
+
+        window.pdfjsLib = window.pdfjsLib || globalThis.pdfjsLib;
+        if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.js';
+        }
+
+        function handlePdfToImageFileSelect(e) {
+            pdfToImageFile = e.target.files[0] || null;
+            if (pdfToImageFile) {
+                showToast('PDF loaded. Please enter page numbers to convert.', 'info');
+            }
+        }
+
+        function parsePdfPageSelection(selection, totalPages) {
+            const cleaned = selection.replace(/\s+/g, '');
+            if (!cleaned) {
+                throw new Error('Please enter which pages you want to convert');
+            }
+
+            const pages = new Set();
+            cleaned.split(',').forEach((part) => {
+                if (!part) return;
+                if (part.includes('-')) {
+                    const [startRaw, endRaw] = part.split('-');
+                    const start = parseInt(startRaw, 10);
+                    const end = parseInt(endRaw, 10);
+                    if (Number.isNaN(start) || Number.isNaN(end) || start > end) {
+                        throw new Error(`Invalid page range: ${part}`);
+                    }
+                    for (let p = start; p <= end; p++) pages.add(p);
+                } else {
+                    const page = parseInt(part, 10);
+                    if (Number.isNaN(page)) throw new Error(`Invalid page: ${part}`);
+                    pages.add(page);
+                }
+            });
+
+            const sorted = Array.from(pages).sort((a, b) => a - b);
+            sorted.forEach((p) => {
+                if (p < 1 || p > totalPages) {
+                    throw new Error(`Page ${p} is outside PDF page range (1-${totalPages})`);
+                }
+            });
+            return sorted;
+        }
+
+        async function convertPdfToImages() {
+            if (!pdfToImageFile) {
+                showToast('Please upload a PDF file first', 'error');
+                return;
+            }
+
+            if (!window.pdfjsLib) {
+                showToast('PDF engine failed to load. Refresh and try again.', 'error');
+                return;
+            }
+
+            const results = document.getElementById('pdf-image-results');
+            results.innerHTML = '<p class="text-xs text-secondary">Converting selected pages...</p>';
+
+            try {
+                pdfToImageUrls.forEach((u) => URL.revokeObjectURL(u));
+                pdfToImageUrls = [];
+
+                const fileBuffer = await pdfToImageFile.arrayBuffer();
+                const loadingTask = window.pdfjsLib.getDocument({ data: fileBuffer });
+                const pdfDoc = await loadingTask.promise;
+
+                const selection = document.getElementById('pdf-image-pages').value;
+                const selectedPages = parsePdfPageSelection(selection, pdfDoc.numPages);
+
+                results.innerHTML = '';
+                for (const pageNum of selectedPages) {
+                    const page = await pdfDoc.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 2 });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+                    const imgUrl = URL.createObjectURL(blob);
+                    pdfToImageUrls.push(imgUrl);
+
+                    const card = document.createElement('div');
+                    card.className = 'bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-3 flex flex-col gap-3';
+                    card.innerHTML = `
+                        <img src="${imgUrl}" class="w-full rounded-lg border border-outline-variant/20" alt="PDF page ${pageNum}">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-on-surface">Page ${pageNum}</span>
+                            <button class="text-xs font-semibold text-primary hover:underline" onclick="downloadPdfImagePage('${imgUrl}', ${pageNum})">Download</button>
+                        </div>
+                    `;
+                    results.appendChild(card);
+                }
+
+                showToast(`Converted ${selectedPages.length} selected page(s) to images`, 'success');
+            } catch (err) {
+                results.innerHTML = `<p class="text-xs text-error">${err.message}</p>`;
+                showToast('PDF to image conversion failed: ' + err.message, 'error');
+            }
+        }
+
+        function downloadPdfImagePage(url, pageNum) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pdf-page-${pageNum}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+
+        /* ========================================================
+           8. EXTRACT TEXT (OCR) ENGINE
            ======================================================== */
         let ocrInputFile = null;
 
